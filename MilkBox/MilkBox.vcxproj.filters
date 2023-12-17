@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Driver Files">
+      <UniqueIdentifier>{8E41214B-6785-4CFE-B992-037D68949A14}</UniqueIdentifier>
+      <Extensions>inf;inv;inx;mof;mc;</Extensions>
+    </Filter>
+    <Filter Include="Source Files\MilkBox">
+      <UniqueIdentifier>{349707a2-7add-40c3-9e1f-8f0593be41cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MilkBox\Dump">
+      <UniqueIdentifier>{5340de48-eaab-4dcc-8c0e-7522f63674f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MilkBox\Misc">
+      <UniqueIdentifier>{564cd9a2-5998-460f-8b63-0bc7f04d4770}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\MilkBox">
+      <UniqueIdentifier>{2164e783-d53a-4778-abf6-ecc21cccfa4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MilkBox\Runtime">
+      <UniqueIdentifier>{df7e4fd3-0ead-4b03-b70b-d233cac17d4f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Inf Include="MilkBox.inf">
+      <Filter>Driver Files</Filter>
+    </Inf>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Driver.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime.c">
+      <Filter>Source Files\MilkBox\Runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="DumpFile.c">
+      <Filter>Source Files\MilkBox\Dump</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.c">
+      <Filter>Source Files\MilkBox\Misc</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Runtime.h">
+      <Filter>Header Files\MilkBox</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Header Files\MilkBox</Filter>
+    </ClInclude>
+    <ClInclude Include="DumpFile.h">
+      <Filter>Header Files\MilkBox</Filter>
+    </ClInclude>
+    <ClInclude Include="HAL.h">
+      <Filter>Header Files\MilkBox</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
