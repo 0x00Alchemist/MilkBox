@@ -8,7 +8,17 @@
 
 static UINT64 PreviousImageBase = 0;
 
-
+/**
+ * \brief Writes dumped driver to file
+ * 
+ * \param ImageBase Base address of runtime driver
+ * \param ImageSize Size of runtime driver
+ * \param FileName File name
+ * 
+ * \return STATUS_SUCCESS - Dumped succesfully
+ * \return STATUS_INVALID_ADDRESS - Cannot validate address of runtime driver
+ * \return Other - Other error occurs
+ */
 NTSTATUS
 NTAPI
 WriteDumpFile(
@@ -18,13 +28,13 @@ WriteDumpFile(
 ) {	
 	PAGED_CODE();
 
-	// @note: @0x00Alchemist: because I'm paranoidal
+	// \note @0x00Alchemist: because I'm paranoidal
 	if(!ValidateImage(ImageBase, ImageSize)) {
 		KdPrint(("[ MilkBox ] Invalid image!\n"));
 		return STATUS_INVALID_ADDRESS;
 	}
 
-	// @note: @0x00Alchemist: round image size to pages
+	// \note @0x00Alchemist: round image size to pages
 	ULONG Size = 0;
 	INT32 Pages = BYTES_TO_PAGES(ImageSize);
 	NTSTATUS Status = RtlULongMult(Pages, PAGE_SIZE, &Size);
@@ -33,14 +43,14 @@ WriteDumpFile(
 		return Status;
 	}
 
-	// @note: @0x00Alchemist: check if virtual addresses of theoretical RT driver corresponds with physical
+	// \note @0x00Alchemist: check if virtual addresses of theoretical RT driver corresponds with physical
 	Status = TestRelatedPhysAddr(ImageBase, Pages);
 	if(!NT_SUCCESS(Status)) {
 		KdPrint(("[ MilkBox ] Found unrelated page!\n"));
 		return Status;
 	}
 
-	// @note: @0x00Alchemist: create and write dump
+	// \note @0x00Alchemist: create and write dump
 	OBJECT_ATTRIBUTES ObjAttr;
 	InitializeObjectAttributes(&ObjAttr, &FileName, (OBJ_CASE_INSENSITIVE | OBJ_KERNEL_HANDLE), NULL, NULL);
 
@@ -62,6 +72,14 @@ WriteDumpFile(
 	return Status;
 }
 
+/**
+ * \brief Creates dump file and writes info to it
+ * 
+ * \param MbList List of runtime drivers
+ * 
+ * \return STATUS_SUCCESS - All drivers has been dumped
+ * \return Other - Unable to dump one or more drivers
+ */
 NTSTATUS
 NTAPI
 ProcessDump(

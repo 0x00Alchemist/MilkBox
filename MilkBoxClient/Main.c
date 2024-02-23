@@ -17,6 +17,14 @@
 static HANDLE hMilkBoxDevice = NULL;
 
 
+/**
+ * \brief Handles user input
+ * 
+ * \param Cmd Command
+ * 
+ * \return TRUE - User decieded to exit
+ * \return FALSE - User wants to continue
+ */
 BOOLEAN 
 WINAPI
 CommandParser(
@@ -25,7 +33,7 @@ CommandParser(
 	BOOLEAN Exit = FALSE;
 	DWORD Ret = 0;
 
-	// @note: @0x00Alchemist: there's can be hash collisions, be aware. Our hashes precomputed though
+	/// \note @0x00Alchemist: there's can be hash collisions, be aware. Our hashes precomputed though
 	switch(HashString(Cmd)) {
 		case CMD_RTD:
 			if(!DeviceIoControl(hMilkBoxDevice, IOCTL_LOCATE_RT_DRIVERS, NULL, 0, NULL, 0, &Ret, NULL)) {
@@ -55,6 +63,15 @@ CommandParser(
 	return Exit;
 }
 
+/**
+ * \brief Entry point of the program
+ * 
+ * \param Argc Value of args
+ * \param Argv Array of args
+ * 
+ * \return 0 - Terminated succesfully
+ * \return 1 - An error occurred during driver or service registration
+ */
 INT
 WINAPI
 wmain(
@@ -65,30 +82,30 @@ wmain(
 	wprintf(L"[ MilkBox ] Provide path to driver: ");
 	wscanf(L"%s", Path);
 
-	// @note: @0x00Alchemist: check path validity
+	/// \note @0x00Alchemist: check path validity
 	if((wcslen(Path) > MAX_PATH) || Path == NULL) {
 		wprintf(L"[ MilkBox ] Invalid path!\n");
 		return 1;
 	}
 
-	// @note: @0x00Alchemist: create directory for dumps
+	/// \note @0x00Alchemist: create directory for dumps
 	if(!CreateWorkingDirectory())
 		return 1;
 
-	// @note: @0x00Alchemist: register our service
+	/// \note @0x00Alchemist: register our service
 	if(!CreateMilkBoxService(Path))
 		return 1;
 
-	// @note: @0x00Alchemist: start our service
+	/// \note @0x00Alchemist: start our service
 	if(!StartMilkBoxService())
 		return 1;
 
-	// @note: @0x00Alchemist: open session
+	/// \note @0x00Alchemist: open session
 	hMilkBoxDevice = OpenMilkBoxDeviceSession();
 	if(hMilkBoxDevice == NULL)
 		return 1;
 
-	// @note: @0x00Alchemist: parse user input
+	/// \note @0x00Alchemist: parse user input
 	BOOLEAN Continue = FALSE;
 	do {
 		WCHAR Cmd[64] = { 0 };
@@ -100,10 +117,10 @@ wmain(
 		Continue = CommandParser(Cmd);
 	} while(!Continue);
 
-	// @note: @0x00Alchemist: stop our service, it's not critical if we cannot stop it programmatically at exit
+	/// \note @0x00Alchemist: stop our service, it's not critical if we cannot stop it programmatically at exit
 	StopMilkBoxService();
 
-	// @note: @0x00Alchemist: close session
+	/// \note @0x00Alchemist: close session
 	CloseMilkBoxDeviceSession(hMilkBoxDevice);
 
 	wprintf(L"[ MilkBox ] Bye bye!\n");

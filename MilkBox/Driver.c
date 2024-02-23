@@ -12,6 +12,16 @@
 static MB_LIST MilkBoxList = { 0 };
 
 
+/**
+ * \brief Drivers dispatch function handler
+ *
+ * \param DriverObject Pointer on driver object
+ * \param Irp I/O Request packet
+ *
+ * \return STATUS_SUCCESS - Request has been dispatched
+ * \return STATUS_INVALID_PARAMETER_2 - Invalid control code
+ * \return Other - Unable to handle request
+ */
 NTSTATUS
 NTAPI
 DriverDispatch(
@@ -25,6 +35,7 @@ DriverDispatch(
 	NTSTATUS Status = STATUS_SUCCESS;
 	PIO_STACK_LOCATION IoStackLocation = IoGetCurrentIrpStackLocation(Irp);
 	
+	/// \note @0x00Alchemist: get control code
 	ULONG ControlCode = IoStackLocation->Parameters.DeviceIoControl.IoControlCode;
 	switch(ControlCode) {
 		case IOCTL_LOCATE_RT_DRIVERS: {
@@ -55,6 +66,14 @@ DriverDispatch(
 	return Status;
 }
 
+/**
+ * \brief Drivers create/close function handler
+ *
+ * \param DriverObject Pointer on driver object
+ * \param Irp I/O Request packet
+ *
+ * \return STATUS_SUCCESS
+ */
 NTSTATUS
 NTAPI
 DriverCreateClose(
@@ -71,6 +90,14 @@ DriverCreateClose(
 	return STATUS_SUCCESS;
 }
 
+/**
+ * \brief Drivers unimplemented function handler
+ * 
+ * \param DriverObject Pointer on driver object
+ * \param Irp I/O Request packet
+ * 
+ * \return STATUS_SUCCESS
+ */
 NTSTATUS
 NTAPI
 DriverUnimplemented(
@@ -87,6 +114,13 @@ DriverUnimplemented(
 	return STATUS_SUCCESS;
 }
 
+/**
+ * \brief Driver unload routine
+ * 
+ * \param DriverObject Pointer on driver object
+ * 
+ * \return STATUS_SUCCESS - Driver has been unloaded
+ */
 NTSTATUS 
 NTAPI
 DriverUnload(
@@ -100,6 +134,15 @@ DriverUnload(
 	return STATUS_SUCCESS;
 }
 
+/**
+ * \brief Driver entry point
+ * 
+ * \param DriverObject Pointer on driver object 
+ * \param RegistryPath String which contains registry path
+ * 
+ * \return STATUS_SUCCESS - Driver initialized
+ * \return Other - Unable to initalize driver
+ */
 NTSTATUS 
 NTAPI
 DriverEntry(
@@ -108,7 +151,7 @@ DriverEntry(
 ) {
 	UNREFERENCED_PARAMETER(RegistryPath);
 
-	// @note: @0x00Alchemist: reassign IRP hanlers
+	/// \note @0x00Alchemist: reassign IRP hanlers
 	for(INT32 i = 0; i < IRP_MJ_MAXIMUM_FUNCTION; i++)
 		DriverObject->MajorFunction[i] = DriverUnimplemented;
 
@@ -121,7 +164,7 @@ DriverEntry(
 	DEVICE_OBJECT DeviceObject;
 	RtlSecureZeroMemory(&DeviceObject, sizeof(DEVICE_OBJECT));
 
-	// @note: @0x00Alchemist: register device object
+	/// \note @0x00Alchemist: register device object
 	UNICODE_STRING DeviceName = RTL_CONSTANT_STRING(L"\\Device\\MilkBox");
 	NTSTATUS Status = IoCreateDevice(DriverObject, 0, &DeviceName, FILE_DEVICE_UNKNOWN, FILE_DEVICE_SECURE_OPEN, TRUE, &DeviceObject);
 	if(!NT_SUCCESS(Status)) {

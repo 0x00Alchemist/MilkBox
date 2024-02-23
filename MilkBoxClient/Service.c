@@ -4,6 +4,12 @@
 #pragma comment(lib, "advapi32.lib")
 
 
+/**
+ * \brief Starts MilkBox service
+ * 
+ * \return TRUE - Service has been started
+ * \return FALSE - Unable to start MilkBox service
+ */
 BOOLEAN
 WINAPI
 StartMilkBoxService(
@@ -39,6 +45,9 @@ StartMilkBoxService(
 	return TRUE;
 }
 
+/**
+ * \brief Stops MilkBox service
+ */
 VOID
 WINAPI
 StopMilkBoxService(
@@ -67,6 +76,12 @@ StopMilkBoxService(
 	CloseServiceHandle(hSc);
 }
 
+/**
+ * \brief Deletes MilkBoxService
+ * 
+ * \return TRUE - Service has been deleted
+ * \return FALSE - Unable to delete service
+ */
 BOOLEAN
 WINAPI
 DeleteMilkBoxService(
@@ -96,6 +111,14 @@ DeleteMilkBoxService(
 	return TRUE;
 }
 
+/**
+ * \brief Creates MilkBox service
+ * 
+ * \param DriverPath Path to MilkBox driver
+ * 
+ * \return TRUE - Service has been created
+ * \return FALSE - Unable to create service
+ */
 BOOLEAN
 WINAPI
 CreateMilkBoxService(
@@ -111,7 +134,7 @@ CreateMilkBoxService(
 	if(hService == NULL) {
 		DWORD dwError = GetLastError();
 		if(dwError == ERROR_SERVICE_EXISTS) {
-			// @note: @0x00Alchemist: we're not uninstalling service after exit, just stopping it
+			/// \note @0x00Alchemist: we're not uninstalling service after exit, just stopping it
 			wprintf(L"[ MilkBox ] Service already exists, we'll start it..\n");
 		} else {
 			wprintf(L"[ MilkBox ] Cannot create service!\n");

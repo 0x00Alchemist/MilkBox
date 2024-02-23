@@ -9,28 +9,13 @@
 #define RT_SERVICES_COUNT	(sizeof(HAL_EFI_RUNTIME_SERVICES_TABLE) / sizeof(PVOID))
 
 
-UINT32
-NTAPI
-GetImageSize(
-	_In_  PVOID  ImageBase
-) {
-	PAGED_CODE();
-
-	UINT32 ImageSize = 0;
-
-	PIMAGE_DOS_HEADER Dos = (PIMAGE_DOS_HEADER)ImageBase;
-	if(Dos->e_magic != IMAGE_DOS_SIGNATURE)
-		return 0;
-
-	PIMAGE_NT_HEADERS64 Nt64 = (PIMAGE_NT_HEADERS64)((UINT_PTR)ImageBase + Dos->e_lfanew);
-	if(Nt64->Signature != IMAGE_NT_SIGNATURE)
-		return 0;
-
-	ImageSize = Nt64->OptionalHeader.SizeOfImage;
-
-	return ImageSize;
-}
-
+/**
+ * \brief Searches runtime driver by specific runtime service
+ * 
+ * \param RuntimeFunction Address of runtime service
+ * 
+ * \return Base address of runtime driver (if found)
+ */
 PVOID
 NTAPI
 FindBase(
@@ -40,15 +25,15 @@ FindBase(
 
 	PVOID SearchBase = NULL;
 
-	// @note: @0x00Alchemist: value of pages can be changed (minimum 8 pages needed). 
-	// Raising pages under scanning can cause slowdowns
+	/// \note @0x00Alchemist: value of pages can be changed (minimum 8 pages needed). 
+	/// Raising pages under scanning can cause slowdowns
 	INT PagesToScan = 16;
 
-	// @note: @0x00Alchemist: search in range of function for DOS headers
+	/// \note @0x00Alchemist: search in range of function for DOS headers
 	SearchBase = PAGE_ALIGN(RuntimeFunction);
 	while(PagesToScan--) {
-		// @note: @0x00Alchemist: because there's should be associated physical address of runtime driver.
-		// If it's 0, driver not associated with anything
+		/// \note @0x00Alchemist: because there's should be associated physical address of runtime driver.
+		/// If it's 0, driver not associated with anything
 		PHYSICAL_ADDRESS Phys = MmGetPhysicalAddress(SearchBase);
 		if(Phys.QuadPart == 0)
 			return NULL;
@@ -67,6 +52,13 @@ FindBase(
 	return SearchBase;
 }
 
+/**
+ * \brief Searches runtime drivers by provided table of runtime services
+ * 
+ * \param HalEfiRuntimeServicesTable Pointer on table
+ * \param DriverInfo List of located runtime drivers
+ * \param Entries Value of entries
+ */
 VOID
 NTAPI
 FindRuntimeDriverByFunction(
@@ -76,14 +68,13 @@ FindRuntimeDriverByFunction(
 ) {
 	PAGED_CODE();
 
-	// @note: @0x00Alchemist: search driver for each function 
+	/// \note @0x00Alchemist: search driver for each function 
 	SIZE_T Count = 0;
 	for(INT i = 0; i < RT_SERVICES_COUNT; i++) {
-		// @note: @0x00Alchemist: some of RT services can be NULL, skip them
 		if(((PVOID *)HalEfiRuntimeServicesTable)[i] != NULL) {
 			PVOID Base = FindBase(((PVOID *)HalEfiRuntimeServicesTable)[i]);
 			if(Base != NULL) {
-				// @note: @0x00Alchemist: save base address of image
+				/// \note @0x00Alchemist: save base address of image
 				DriverInfo[i].Base = Base;
 				*Entries = Count;
 
@@ -93,6 +84,11 @@ FindRuntimeDriverByFunction(
 	}
 }
 
+/**
+ * \brief Searches a table containing pointers to runtime services
+ * 
+ * \return Table address (if found)
+ */
 PVOID
 NTAPI
 LocateRuntimeBlock(
@@ -100,24 +96,24 @@ LocateRuntimeBlock(
 ) {
 	PAGED_CODE();
 
-	// @note: @0x00Alchemist: locate kernel base address
+	/// \note @0x00Alchemist: locate kernel base address
 	PVOID ImageBase = FindKernelBase();
 	if(ImageBase == NULL) {
 		KdPrint(("[ MilkBox ] Cannot find kernel base address!\n"));
 		return NULL;
 	}
 
-	// @note: @0x00Alchemist: locate CFGRO section
+	/// \note @0x00Alchemist: locate CFGRO section
 	PVOID RawBlock = FindSection(ImageBase, "CFGRO\0\0");
 	if(RawBlock == NULL) {
 		KdPrint(("[ MilkBox ] Cannot find \"CFGRO\" section!\n"));
 		return NULL;
 	}
 
-	// @note: @0x00Alchemist: should be after RtlpInvertedFunctionTable (in 8 bytes)
+	/// \note @0x00Alchemist: should be after RtlpInvertedFunctionTable (in 8 bytes)
 	RawBlock = CalcOffset(RawBlock, 8);
 
-	// @note: @0x00Alchemist: I wrote it under a bottle of whiskey
+	/// \note @0x00Alchemist: I wrote it under a bottle of whiskey
 	MB_TABLE_OFFSET_INFO Offset = { 0 };
 
 	SIZE_T Copied = 0;
@@ -133,7 +129,15 @@ LocateRuntimeBlock(
 	return Offset.Address;
 }
 
-
+/**
+ * \brief Locates runtime drivers by getting pointers on virtualized runtime services
+ * 
+ * \param MbList List of runtime driver addresses
+ * 
+ * \return STATUS_SUCCESS - Drivers has been found
+ * \return STATUS_NOT_FOUND - Unable to locate virtualized table which contains pointers on runtime services
+ * \return Other - Cannot copy table
+ */
 NTSTATUS 
 NTAPI
 FindRuntimeImages(
@@ -141,12 +145,12 @@ FindRuntimeImages(
 ) {
 	PAGED_CODE();
 
-	// @note: @0x00Alchemist: locate HAL_EFI_RUNTIME_SERVICES_TABLE
+	/// \note @0x00Alchemist: locate HAL_EFI_RUNTIME_SERVICES_TABLE
 	PVOID Address = LocateRuntimeBlock();
 	if(Address == NULL)
 		return STATUS_NOT_FOUND;
 
-	// @note: @0x00Alchemist: copy block
+	/// \note @0x00Alchemist: copy block
 	SIZE_T Copied = 0;
 	MM_COPY_ADDRESS TableAddress;
 	HAL_EFI_RUNTIME_SERVICES_TABLE HalEfiRuntimeServicesTable = { 0 };
@@ -158,12 +162,12 @@ FindRuntimeImages(
 		return Status;
 	}
 
-	// @note: @0x00Alchemist: find drivers to related functions
+	/// \note @0x00Alchemist: find drivers to related functions
 	SIZE_T Count;
 	MB_DRIVER_INFO DriverInfo[RT_SERVICES_COUNT] = { 0 };
 	FindRuntimeDriverByFunction(&HalEfiRuntimeServicesTable, &DriverInfo, &Count);
 
-	// @note: @0x00Alchemist: collect information about drivers (do not worry about address collisions, we exclude it later)
+	/// \note @0x00Alchemist: collect information about drivers (do not worry about address collisions, we exclude it later)
 	for(INT i = 0; i < Count; i++) {
 		if(DriverInfo[i].Base != NULL) {
 			UINT32 Size = GetImageSize(DriverInfo[i].Base);

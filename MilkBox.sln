@@ -9,8 +9,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MilkBoxClient", "MilkBoxCli
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{0D0859C4-EE8E-46DC-AB81-F8B6C26311EA}"
 	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MilkFix", "MilkFix\MilkFix.vcxproj", "{7C8C1294-A750-412E-96A4-0F69E7699420}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +51,18 @@ Global
 		{2414CF7C-0B0E-4F41-8F5F-924AFDF8331B}.Release|x64.Build.0 = Release|x64
 		{2414CF7C-0B0E-4F41-8F5F-924AFDF8331B}.Release|x86.ActiveCfg = Release|Win32
 		{2414CF7C-0B0E-4F41-8F5F-924AFDF8331B}.Release|x86.Build.0 = Release|Win32
+		{7C8C1294-A750-412E-96A4-0F69E7699420}.Debug|ARM64.ActiveCfg = Debug|x64
+		{7C8C1294-A750-412E-96A4-0F69E7699420}.Debug|ARM64.Build.0 = Debug|x64
+		{7C8C1294-A750-412E-96A4-0F69E7699420}.Debug|x64.ActiveCfg = Debug|x64
+		{7C8C1294-A750-412E-96A4-0F69E7699420}.Debug|x64.Build.0 = Debug|x64
+		{7C8C1294-A750-412E-96A4-0F69E7699420}.Debug|x86.ActiveCfg = Debug|Win32
+		{7C8C1294-A750-412E-96A4-0F69E7699420}.Debug|x86.Build.0 = Debug|Win32
+		{7C8C1294-A750-412E-96A4-0F69E7699420}.Release|ARM64.ActiveCfg = Release|x64
+		{7C8C1294-A750-412E-96A4-0F69E7699420}.Release|ARM64.Build.0 = Release|x64
+		{7C8C1294-A750-412E-96A4-0F69E7699420}.Release|x64.ActiveCfg = Release|x64
+		{7C8C1294-A750-412E-96A4-0F69E7699420}.Release|x64.Build.0 = Release|x64
+		{7C8C1294-A750-412E-96A4-0F69E7699420}.Release|x86.ActiveCfg = Release|Win32
+		{7C8C1294-A750-412E-96A4-0F69E7699420}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

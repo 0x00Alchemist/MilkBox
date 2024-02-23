@@ -47,3 +47,9 @@ NTAPI
 GetCurrentTime(
 	VOID
 );
+
+UINT32
+NTAPI
+GetImageSize(
+	_In_  PVOID  ImageBase
+);

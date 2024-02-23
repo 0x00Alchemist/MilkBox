@@ -23,4 +23,4 @@ Since the driver is test signed only, you will need to **disable DSE** (Driver S
 [Alex Ionescu](http://publications.alex-ionescu.com/Recon/ReconBru%202017%20-%20Getting%20Physical%20with%20USB%20Type-C,%20Windows%2010%20RAM%20Forensics%20and%20UEFI%20Attacks.pdf), [Satoshi Tandasat](https://standa-note.blogspot.com/2020/12/experiment-in-extracting-runtime.html) (for some tricks with physical memory which I implemented too).
 
 ## Credits
-[0x00Alchemist](https://github.com/0x00Alchemist) (2023)
+[0x00Alchemist](https://github.com/0x00Alchemist) (2023 - 2024)

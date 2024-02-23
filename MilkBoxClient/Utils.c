@@ -2,6 +2,12 @@
 #include <stdio.h>
 
 
+/**
+ * \brief Creates directory for future dumps
+ * 
+ * \return TRUE - The directory has been successfully created
+ * \return FALSE - Unable to create directory
+ */
 BOOLEAN
 WINAPI
 CreateWorkingDirectory(
@@ -21,6 +27,11 @@ CreateWorkingDirectory(
 	return IsCreated;
 }
 
+/**
+ * \brief Opens MilkBox handle
+ * 
+ * \return MilkBox handle (if opened)
+ */
 HANDLE
 WINAPI
 OpenMilkBoxDeviceSession(
@@ -35,6 +46,11 @@ OpenMilkBoxDeviceSession(
 	return hDevice;
 }
 
+/**
+ * \brief Closes MilkBox handle
+ * 
+ * \param hDevice MilkBox handle
+ */
 BOOLEAN
 WINAPI
 CloseMilkBoxDeviceSession(
@@ -43,6 +59,13 @@ CloseMilkBoxDeviceSession(
 	CloseHandle(hDevice);
 }
 
+/**
+ * \brief Hashes specified string
+ * 
+ * \param Buf String
+ * 
+ * \return Hashed string
+ */
 UINT64
 WINAPI
 HashString(
@@ -57,6 +80,9 @@ HashString(
 	return Hash;
 }
 
+/**
+ * \brief Shows command list
+ */
 VOID 
 WINAPI
 PrintUsageInfo(
